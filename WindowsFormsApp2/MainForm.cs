@@ -63,46 +63,74 @@ namespace WindowsFormsApp2
         //==================================================================================================
         private void btnOrder_Click_1(object sender, EventArgs e)
         {
-            _b.Append("Имя: " + tbFirstName.Text + "\r\n");
-            _b.Append("Фамилия: " + tbSurname.Text + "\r\n");
-            _b.Append("Телефон: " + mtbPhoneNumber.Text + "\r\n");
-
-            if (cbLeatherSalon.Checked)
+            try
             {
-                if (rbRed.Checked)
-                {
-                    _b.Append("Цвет салона: " + rbRed.Text + "\r\n");
-                }
-                else if (rbBrown.Checked)
-                {
-                    _b.Append("Цвет салона: " + rbBrown.Text + "\r\n");
-                }
-                else if(rbBlack.Checked)
-                {
-                    _b.Append("Цвет салона: " + rbBlack.Text + "\r\n");
-                }
-            }
-            _b.Append("Марка авто: " + lbMarks.Text + "\r\n");
+                if (tbFirstName.Text.Length == 0) throw new Exception("Введите имя покупателя!");
+                if (tbSurname.Text.Length == 0) throw new Exception("Введите фамилию покупателя!");
+                _b.Append("Имя: " + tbFirstName.Text + "\r\n");
+                _b.Append("Фамилия: " + tbSurname.Text + "\r\n");
+                _b.Append("Телефон: " + mtbPhoneNumber.Text + "\r\n");
 
-            if (clbOptions.Items != null)
-            {
-                for (int i = 0; i <=(clbOptions.Items.Count-1); i++)
+                if (cbLeatherSalon.Checked)
                 {
-                    if (clbOptions.GetItemChecked(i))
+                    //if (rbRed.Checked)
+                    //{
+                    //    _b.Append("Цвет салона: " + rbRed.Text + "\r\n");
+                    //}
+                    //else if (rbBrown.Checked)
+                    //{
+                    //    _b.Append("Цвет салона: " + rbBrown.Text + "\r\n");
+                    //}
+                    //else if(rbBlack.Checked)
+                    //{
+                    //    _b.Append("Цвет салона: " + rbBlack.Text + "\r\n");
+                    //}
+                    if (cbLeatherSalon.Checked)
                     {
-                        _b.Append("Дополнительные опции: " + clbOptions.Items[i] + "\r\n");
+                        foreach (Control item in grbColors.Controls)
+                        {
+                            if (item is RadioButton r && r.Checked)
+                            {
+                                _b.Append("Цвет салона: " + r.Text + "\r\n");
+                                break;
+                            }
+                        }
                     }
                 }
-            }
-            _b.Append("Диапазон доставки от: " + mcDelivery.SelectionRange.Start.ToShortDateString() + "\r\n");
-            _b.Append("Диапазон доставки до: " + mcDelivery.SelectionRange.End.ToShortDateString() + "\r\n");
+                _b.Append("Марка авто: " + lbMarks.Text + "\r\n");
 
-            if (cbSaler.SelectedItem != null)
-            {
-                _b.Append("Продавец: " + cbSaler.Text + "\r\n");
+                if (clbOptions.Items != null)
+                {
+                    for (int i = 0; i <= (clbOptions.Items.Count - 1); i++)
+                    {
+                        if (clbOptions.GetItemChecked(i))
+                        {
+                            _b.Append("Дополнительные опции: " + clbOptions.Items[i] + "\r\n");
+                        }
+                    }
+                }
+                if (mcDelivery.SelectionStart >= mcDelivery.TodayDate)
+                {
+                    _b.Append("Диапазон доставки от: " + mcDelivery.SelectionRange.Start.ToShortDateString() + "\r\n");
+                }
+                else
+                {
+                    throw new Exception("Выставлена неверная дата!");
+                }
+                _b.Append("Диапазон доставки до: " + mcDelivery.SelectionEnd.ToShortDateString() + "\r\n");
+
+                if (cbSaler.SelectedItem != null)
+                {
+                    _b.Append("Продавец: " + cbSaler.Text + "\r\n");
+                }
+
+                txbDelivery.Text = _b.ToString();
+                //MessageBox.Show(_b.ToString());
             }
-            //MessageBox.Show(_b.ToString());
-            txbDelivery.Text = _b.ToString();
+            catch (Exception ex)
+            {
+                txbDelivery.Text = ex.Message;
+            }
             _b.Clear(); // Чтобы менять инфу, очищать от старой, и тестировать дальше
         }
     }
